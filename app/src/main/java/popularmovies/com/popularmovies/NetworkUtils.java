@@ -2,6 +2,7 @@ package popularmovies.com.popularmovies;
 
 import android.net.Uri;
 
+import java.io.IOError;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -58,9 +59,11 @@ public class NetworkUtils {
             } else {
                 return null;
 
-            } finally{
-                urlConnection.disconnect();
             }
+
+
+        } finally{
+            urlConnection.disconnect();
 
 
         }
