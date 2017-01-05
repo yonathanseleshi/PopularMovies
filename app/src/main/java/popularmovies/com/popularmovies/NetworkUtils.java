@@ -20,6 +20,8 @@ public class NetworkUtils {
     final static String Moviedb_URL = "https://api.themoviedb.org/3/movie/";
     final static String QUERY = "?";
     final static String API_KEY = Keys.API_KEY;
+    final static String Language = "&language=en";
+    final static String Page = "&page=1"
 
 
     public static URL BuildUrl(String sort_by) {
@@ -27,6 +29,8 @@ public class NetworkUtils {
                 .appendPath(sort_by)
                 .appendPath(QUERY)
                 .appendPath(API_KEY)
+                .appendPath(Language)
+                .appendPath(Page)
                 .build();
 
         URL url = null;

@@ -2,6 +2,7 @@ package popularmovies.com.popularmovies;
 
 import android.content.ClipData;
 import android.content.Context;
+import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.view.menu.MenuView;
@@ -9,6 +10,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -37,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
 
         String rated = "top_rated";
         String popularity = "popular";
-        String moviedbResults = null;
+
 
         int itemSelected = item.getItemId();
 
@@ -45,33 +47,65 @@ public class MainActivity extends AppCompatActivity {
 
             URL getUrl = NetworkUtils.BuildUrl(rated);
 
-            try {
 
-             moviedbResults = NetworkUtils.getResponseFromHttpUrl(getUrl);
-
-            } catch (IOException e) {
-
-                e.printStackTrace();
-            }
+            new GetMovieData().execute(getUrl);
 
 
-            return true;
         } else if (itemSelected == popular) {
 
-            try {
+            URL getUrl = NetworkUtils.BuildUrl(popularity);
 
-                URL getUrl = NetworkUtils.BuildUrl(popularity);
-                  moviedbResults = NetworkUtils.getResponseFromHttpUrl(getUrl);
+            new GetMovieData().execute(getUrl);
 
-            } catch (IOException e) {
-
-                e.printStackTrace();
-            }
-            return super.onOptionsItemSelected(item);
 
         }
 
-        return true;
+        return super.onOptionsItemSelected(item);
     }
+
+
+    public class GetMovieData extends AsyncTask<URL, Void, String> {
+
+
+        @Override
+        protected String doInBackground(URL... urls) {
+
+            String moviedbResults = null;
+            URL queryURL = urls[0];
+
+            try {
+
+
+                moviedbResults = NetworkUtils.getResponseFromHttpUrl(queryURL);
+
+            } catch (IOException e) {
+
+                e.printStackTrace();
+            }
+
+            return moviedbResults;
+
+        }
+
+
+        @Override
+        protected void onPostExecute(String s) {
+
+            try {
+
+
+                JSONObject moviedb_json = new JSONObject(s);
+                JSONObject results = moviedb_json.getJSONObject("results");
+
+
+            } catch (JSONException e) {
+
+                e.printStackTrace();
+            }
+        }
+    }
+
+
+
 
 }
