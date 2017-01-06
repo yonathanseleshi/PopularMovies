@@ -6,6 +6,8 @@ import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.view.menu.MenuView;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,11 +23,24 @@ public class MainActivity extends AppCompatActivity {
     public int popular = R.id.sortby_popularity;
     public int rating = R.id.sortby_rating;
 
+    private static final int NUM_LIST_ITEMS = 20;
+    private MovieAdapter mAdapter;
+    private RecyclerView mMoviePosters;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        mMoviePosters = (RecyclerView) findViewById(R.id.movie_posters);
+
+        GridLayoutManager layoutManager = new GridLayoutManager(this);
+        mMoviePosters.setLayoutManager(layoutManager);
+        mMoviePosters.setHasFixedSize(true);
+        mAdapter = new MovieAdapter(NUM_LIST_ITEMS);
+        mMoviePosters.setAdapter(mAdapter);
+
     }
 
     @Override
