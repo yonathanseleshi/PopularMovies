@@ -96,12 +96,17 @@ public class MainActivity extends AppCompatActivity {
 
                 JSONObject moviedb_json = new JSONObject(s);
                 JSONObject results = moviedb_json.getJSONObject("results");
+                 String poster = results.getString("poster_path");
+
+
 
 
             } catch (JSONException e) {
 
                 e.printStackTrace();
             }
+
+
         }
     }
 
