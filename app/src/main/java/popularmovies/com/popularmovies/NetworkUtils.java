@@ -21,7 +21,11 @@ public class NetworkUtils {
     final static String QUERY = "?";
     final static String API_KEY = Keys.API_KEY;
     final static String Language = "&language=en";
-    final static String Page = "&page=1"
+    final static String Page = "&page=1";
+
+    final static String BaseImageURL = "http://image.tmdb.org/t/p/";
+    final static String ImageSize185 = "w185";
+
 
 
     public static URL BuildUrl(String sort_by) {
@@ -44,6 +48,17 @@ public class NetworkUtils {
         ;
 
         return url;
+    }
+
+    public static URL BuildImageUrl(String imageURL){
+
+
+     Uri builtImageUri = Uri.parse(BaseImageURL).buildUpon()
+             .appendPath(ImageSize185)
+             .appendPath(imageURL)
+             .build();
+
+
     }
 
 

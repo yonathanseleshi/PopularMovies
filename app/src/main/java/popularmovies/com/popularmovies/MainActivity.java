@@ -11,12 +11,15 @@ import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -26,7 +29,10 @@ public class MainActivity extends AppCompatActivity {
     private static final int NUM_LIST_ITEMS = 20;
     private MovieAdapter mAdapter;
     private RecyclerView mMoviePosters;
+    String popularity = "popular";
 
+    ArrayList<String> posterPathList;
+    ArrayList<String> imageURL;
 
 
     @Override
@@ -34,12 +40,17 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mMoviePosters = (RecyclerView) findViewById(R.id.movie_posters);
+        Context mContext = getApplicationContext();
 
-        GridLayoutManager layoutManager = new GridLayoutManager(this);
+        GridLayoutManager layoutManager = new GridLayoutManager(mContext, 3);
         mMoviePosters.setLayoutManager(layoutManager);
         mMoviePosters.setHasFixedSize(true);
-        mAdapter = new MovieAdapter(NUM_LIST_ITEMS);
+        mAdapter = new MovieAdapter(NUM_LIST_ITEMS, this.);
         mMoviePosters.setAdapter(mAdapter);
+
+        URL getUrl = NetworkUtils.BuildUrl(popularity);
+
+        new GetMovieData().execute(getUrl);
 
     }
 
@@ -53,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
 
         String rated = "top_rated";
-        String popularity = "popular";
+
 
 
         int itemSelected = item.getItemId();
@@ -79,6 +90,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+
+
     public class GetMovieData extends AsyncTask<URL, Void, String> {
 
 
@@ -98,7 +111,39 @@ public class MainActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
 
-            return moviedbResults;
+
+
+            try {
+
+               if (moviedbResults != null) {
+
+                   JSONObject moviedb_json = new JSONObject(moviedbResults);
+                   JSONArray results = moviedb_json.getJSONArray("results");
+
+                   for (int i = 0; i < results.length(); i++) {
+                       JSONObject p = results.getJSONObject(i);
+
+                       String poster = p.getString("poster_path");
+                       posterPathList.add(poster);
+                   }
+
+               }
+
+
+            } catch (JSONException e) {
+
+                e.printStackTrace();
+            }
+
+                      for (int i; i < posterPathList.size(); ++i ) {
+
+                          URL imagePath;
+                          imagePath = NetworkUtils.BuildImageUrl(posterPathList.get(i));
+                          imageURL.add(imagePath.toString());
+
+                      }
+
+
 
         }
 
@@ -106,20 +151,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(String s) {
 
-            try {
 
-
-                JSONObject moviedb_json = new JSONObject(s);
-                JSONObject results = moviedb_json.getJSONObject("results");
-                 String poster = results.getString("poster_path");
-
-
-
-
-            } catch (JSONException e) {
-
-                e.printStackTrace();
-            }
 
 
         }

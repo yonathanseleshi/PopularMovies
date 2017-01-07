@@ -13,11 +13,30 @@ import android.widget.ImageView;
 
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHolder> {
 
+
+    final private MovieItemClickListener mOnClickListener;
+
+
+    public interface MovieItemClickListener {
+        void onListItemClick(int clickedItemIndex);
+
+
+
+
+
+    }
+
+
+
     private int mNumberItems;
 
-    public MovieAdapter(int numberOfItems){
+
+
+    public MovieAdapter(int numberOfItems, MovieItemClickListener listener){
 
         mNumberItems = numberOfItems;
+        mOnClickListener = listener;
+
     }
 
     @Override
@@ -46,7 +65,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
         return mNumberItems;
     }
 
-    class MovieViewHolder extends RecyclerView.ViewHolder {
+    class MovieViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         ImageView movieItemView;
 
         public MovieViewHolder(View itemView) {
@@ -54,11 +73,24 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
 
              movieItemView = (ImageView) itemView.findViewById(R.id.movie_item);
 
+            itemView.setOnClickListener(this);
+
+
+
         }
 
-        void bind(int listIndex){
+        @Override
+        public void onClick(View view) {
 
-            movieItemView.setImageURI();
+            int clickedPosition = getAdapterPosition();
+            mOnClickListener.onListItemClick(clickedPosition);
+
+
+        }
+
+        void bind(ImageView view){
+
+
 
         }
 
