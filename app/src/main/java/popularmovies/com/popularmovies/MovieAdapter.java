@@ -6,6 +6,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import com.squareup.picasso.;
+import java.util.ArrayList;
 
 /**
  * Created by yonathanseleshi on 1/5/17.
@@ -15,6 +17,8 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
 
 
     final private MovieItemClickListener mOnClickListener;
+    private ArrayList<String> mURLS;
+    private Context mContext;
 
 
     public interface MovieItemClickListener {
@@ -32,10 +36,12 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
 
 
 
-    public MovieAdapter(int numberOfItems, MovieItemClickListener listener){
+    public MovieAdapter(int numberOfItems, Context context, MovieItemClickListener listener, ArrayList<String> images){
 
         mNumberItems = numberOfItems;
         mOnClickListener = listener;
+        mURLS = images;
+        mContext = context;
 
     }
 
@@ -57,6 +63,14 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
     @Override
     public void onBindViewHolder(MovieViewHolder holder, int position) {
         holder.bind(position);
+
+        ImageView movieItemView;
+        movieItemView = holder.movieItemView;
+        int i;
+        for (i = 0; i < mURLS.size(); i++){
+            Picasso.with(mContext).load(mURLS.get(i)).into(movieItemView);
+
+        }
 
     }
 
@@ -88,7 +102,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
 
         }
 
-        void bind(ImageView view){
+        void bind(int view){
 
 
 

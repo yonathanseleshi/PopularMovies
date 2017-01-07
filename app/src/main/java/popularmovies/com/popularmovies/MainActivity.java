@@ -135,7 +135,7 @@ public class MainActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
 
-                      for (int i; i < posterPathList.size(); ++i ) {
+                      for (int i = 0; i < posterPathList.size(); ++i ) {
 
                           URL imagePath;
                           imagePath = NetworkUtils.BuildImageUrl(posterPathList.get(i));
