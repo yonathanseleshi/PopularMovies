@@ -58,6 +58,17 @@ public class NetworkUtils {
              .appendPath(imageURL)
              .build();
 
+        URL url = null;
+
+        try {
+            url = new URL(builtImageUri.toString());
+            return url;
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+        ;
+
+        return url;
 
     }
 

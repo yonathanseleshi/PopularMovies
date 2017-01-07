@@ -6,7 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import com.squareup.picasso.;
+import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 
 /**
@@ -36,7 +36,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
 
 
 
-    public MovieAdapter(int numberOfItems, Context context, MovieItemClickListener listener, ArrayList<String> images){
+    public MovieAdapter(int numberOfItems, Context context, MovieItemClickListener listener,  ArrayList<String> images){
 
         mNumberItems = numberOfItems;
         mOnClickListener = listener;
@@ -78,6 +78,8 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
     public int getItemCount() {
         return mNumberItems;
     }
+
+
 
     class MovieViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         ImageView movieItemView;

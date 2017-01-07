@@ -2,6 +2,7 @@ package popularmovies.com.popularmovies;
 
 import android.content.ClipData;
 import android.content.Context;
+import android.net.sip.SipAudioCall;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -20,8 +21,9 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements MovieAdapter.MovieItemClickListener {
 
     public int popular = R.id.sortby_popularity;
     public int rating = R.id.sortby_rating;
@@ -33,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
 
     ArrayList<String> posterPathList;
     ArrayList<String> imageURL;
+    ArrayList<HashMap<String, String>> movieDetails;
 
 
     @Override
@@ -42,10 +45,12 @@ public class MainActivity extends AppCompatActivity {
         mMoviePosters = (RecyclerView) findViewById(R.id.movie_posters);
         Context mContext = getApplicationContext();
 
+
+
         GridLayoutManager layoutManager = new GridLayoutManager(mContext, 3);
         mMoviePosters.setLayoutManager(layoutManager);
         mMoviePosters.setHasFixedSize(true);
-        mAdapter = new MovieAdapter(NUM_LIST_ITEMS, this.);
+        mAdapter = new MovieAdapter(NUM_LIST_ITEMS, mContext, this,  imageURL);
         mMoviePosters.setAdapter(mAdapter);
 
         URL getUrl = NetworkUtils.BuildUrl(popularity);
@@ -89,6 +94,11 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onListItemClick(int clickedItemIndex) {
+
+
+    }
 
 
 
@@ -127,6 +137,24 @@ public class MainActivity extends AppCompatActivity {
                        posterPathList.add(poster);
                    }
 
+                   for (int i = 0; i < results.length(); i++) {
+                       JSONObject p = results.getJSONObject(i);
+
+                       String poster = p.getString("poster_path");
+                       String title = p.getString("original_title");
+                       String rating = p.getString("vote_average");
+                       String release = p.getString("release_date");
+                       String overview = p.getString("overview");
+                       HashMap<String, String> movieDetail = new HashMap<>();
+                       movieDetail.put("poster", poster);
+                       movieDetail.put("title", title);
+                       movieDetail.put("rating", rating);
+                       movieDetail.put("release", release);
+                       movieDetail.put("overview", overview);
+                       movieDetails.add(movieDetail);
+                   }
+
+
                }
 
 
@@ -144,7 +172,7 @@ public class MainActivity extends AppCompatActivity {
                       }
 
 
-
+                  return moviedbResults;
         }
 
 
