@@ -66,11 +66,11 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
 
         ImageView movieItemView;
         movieItemView = holder.movieItemView;
-        int i;
-        for (i = 0; i < mURLS.size(); i++){
-            Picasso.with(mContext).load(mURLS.get(i)).into(movieItemView);
 
-        }
+
+
+            Picasso.with(mContext).load(mURLS.get(position)).into(movieItemView);
+
 
     }
 
