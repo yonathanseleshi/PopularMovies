@@ -29,9 +29,12 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
     public int rating = R.id.sortby_rating;
 
     private static final int NUM_LIST_ITEMS = 20;
-    private MovieAdapter mAdapter;
+    private RecyclerView.Adapter mAdapter;
     private RecyclerView mMoviePosters;
     String popularity = "popular";
+    private RecyclerView.LayoutManager layoutManager;
+    private Context mContext;
+
 
     ArrayList<String> posterPathList;
     ArrayList<String> imageURL;
@@ -43,11 +46,11 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mMoviePosters = (RecyclerView) findViewById(R.id.movie_posters);
-        Context mContext = getApplicationContext();
+        mContext = getApplicationContext();
 
 
 
-        GridLayoutManager layoutManager = new GridLayoutManager(mContext, 3);
+        layoutManager = new GridLayoutManager(mContext, 3);
         mMoviePosters.setLayoutManager(layoutManager);
         mMoviePosters.setHasFixedSize(true);
         mAdapter = new MovieAdapter(NUM_LIST_ITEMS, mContext, this,  imageURL);
