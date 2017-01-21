@@ -23,7 +23,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class MainActivity extends AppCompatActivity implements MovieAdapter.MovieItemClickListener {
+public class MainActivity extends AppCompatActivity {
 
     public int popular = R.id.sortby_popularity;
     public int rating = R.id.sortby_rating;
@@ -33,12 +33,16 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
     private RecyclerView mMoviePosters;
     String popularity = "popular";
     private RecyclerView.LayoutManager layoutManager;
-    private Context mContext;
+    public static Context mContext;
 
 
     ArrayList<String> posterPathList;
     ArrayList<String> imageURL;
     ArrayList<HashMap<String, String>> movieDetails;
+
+    ArrayList<String> moviedb_imageURLs;
+    ArrayList<HashMap<String, String>> moviedb_movieDetails;
+    String moviedbQueryResults;
 
 
     @Override
@@ -50,15 +54,11 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
 
 
 
-        layoutManager = new GridLayoutManager(mContext, 3);
-        mMoviePosters.setLayoutManager(layoutManager);
-        mMoviePosters.setHasFixedSize(true);
-        mAdapter = new MovieAdapter(NUM_LIST_ITEMS, mContext, this,  imageURL);
-        mMoviePosters.setAdapter(mAdapter);
+
 
         URL getUrl = NetworkUtils.BuildUrl(popularity);
-
         new GetMovieData().execute(getUrl);
+
 
     }
 
@@ -72,7 +72,6 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
     public boolean onOptionsItemSelected(MenuItem item) {
 
         String rated = "top_rated";
-
 
 
         int itemSelected = item.getItemId();
@@ -97,15 +96,108 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public void onListItemClick(int clickedItemIndex) {
 
 
+
+    private ArrayList<HashMap<String, String>> getMovieDetails(String moviedbData) {
+
+
+            try
+
+    {
+
+        if (moviedbData != null) {
+
+            JSONObject moviedb_json = new JSONObject(moviedbData);
+            JSONArray results = moviedb_json.getJSONArray("results");
+
+            for (int i = 0; i < results.length(); i++) {
+                JSONObject p = results.getJSONObject(i);
+
+                String poster = p.getString("poster_path");
+                posterPathList.add(poster);
+            }
+
+            for (int i = 0; i < results.length(); i++) {
+                JSONObject p = results.getJSONObject(i);
+
+                String poster = p.getString("poster_path");
+                String title = p.getString("original_title");
+                String rating = p.getString("vote_average");
+                String release = p.getString("release_date");
+                String overview = p.getString("overview");
+                HashMap<String, String> movieDetail = new HashMap<>();
+                movieDetail.put("poster", poster);
+                movieDetail.put("title", title);
+                movieDetail.put("rating", rating);
+                movieDetail.put("release", release);
+                movieDetail.put("overview", overview);
+                movieDetails.add(movieDetail);
+            }
+
+
+        }
+
+
+         } catch(
+           JSONException e)
+
+        {
+
+        e.printStackTrace();
+        }
+             return movieDetails;
+       }
+
+
+
+
+       public ArrayList<String> preparePosterURLS(String moviedbData) {
+
+
+
+           try
+
+           {
+
+               if (moviedbData != null) {
+
+                   JSONObject moviedb_json = new JSONObject(moviedbData);
+           JSONArray results = moviedb_json.getJSONArray("results");
+
+           for (int i = 0; i < results.length(); i++) {
+               JSONObject p = results.getJSONObject(i);
+
+               String poster = p.getString("poster_path");
+               posterPathList.add(poster);
+           }
+
+              for (int i = 0; i < posterPathList.size(); ++i) {
+
+            URL imagePath;
+            imagePath = NetworkUtils.BuildImageUrl(posterPathList.get(i));
+            imageURL.add(imagePath.toString());
+              }
+
+
+               }
+
+
+           } catch(
+                   JSONException e)
+
+           {
+
+               e.printStackTrace();
+           }
+
+        return imageURL;
     }
 
 
 
-    public class GetMovieData extends AsyncTask<URL, Void, String> {
+
+    public class GetMovieData extends AsyncTask<URL, Void, String>{
 
 
         @Override
@@ -124,66 +216,26 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
                 e.printStackTrace();
             }
 
+            String moviedbQueryResults = moviedbResults;
 
-
-            try {
-
-               if (moviedbResults != null) {
-
-                   JSONObject moviedb_json = new JSONObject(moviedbResults);
-                   JSONArray results = moviedb_json.getJSONArray("results");
-
-                   for (int i = 0; i < results.length(); i++) {
-                       JSONObject p = results.getJSONObject(i);
-
-                       String poster = p.getString("poster_path");
-                       posterPathList.add(poster);
-                   }
-
-                   for (int i = 0; i < results.length(); i++) {
-                       JSONObject p = results.getJSONObject(i);
-
-                       String poster = p.getString("poster_path");
-                       String title = p.getString("original_title");
-                       String rating = p.getString("vote_average");
-                       String release = p.getString("release_date");
-                       String overview = p.getString("overview");
-                       HashMap<String, String> movieDetail = new HashMap<>();
-                       movieDetail.put("poster", poster);
-                       movieDetail.put("title", title);
-                       movieDetail.put("rating", rating);
-                       movieDetail.put("release", release);
-                       movieDetail.put("overview", overview);
-                       movieDetails.add(movieDetail);
-                   }
-
-
-               }
-
-
-            } catch (JSONException e) {
-
-                e.printStackTrace();
-            }
-
-                      for (int i = 0; i < posterPathList.size(); ++i ) {
-
-                          URL imagePath;
-                          imagePath = NetworkUtils.BuildImageUrl(posterPathList.get(i));
-                          imageURL.add(imagePath.toString());
-
-                      }
-
-
-                  return moviedbResults;
+                  return moviedbQueryResults;
         }
 
 
         @Override
-        protected void onPostExecute(String s) {
+        protected void onPostExecute(String moviedbQueryData) {
 
 
+          moviedbQueryResults = moviedbQueryData;
 
+            moviedb_movieDetails = getMovieDetails(moviedbQueryResults);
+            moviedb_imageURLs = preparePosterURLS(moviedbQueryResults);
+            layoutManager = new GridLayoutManager(mContext, 3);
+            mMoviePosters.setLayoutManager(layoutManager);
+            mMoviePosters.setHasFixedSize(true);
+
+            mAdapter = new MovieAdapter(NUM_LIST_ITEMS, mContext, moviedb_imageURLs);
+            mMoviePosters.setAdapter(mAdapter);
 
         }
     }

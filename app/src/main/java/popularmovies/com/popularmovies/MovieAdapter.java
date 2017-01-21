@@ -16,19 +16,11 @@ import java.util.ArrayList;
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHolder> {
 
 
-    final private MovieItemClickListener mOnClickListener;
+
     private ArrayList<String> mURLS;
     private Context mContext;
 
 
-    public interface MovieItemClickListener {
-        void onListItemClick(int clickedItemIndex);
-
-
-
-
-
-    }
 
 
 
@@ -36,10 +28,10 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
 
 
 
-    public MovieAdapter(int numberOfItems, Context context, MovieItemClickListener listener,  ArrayList<String> images){
+    public MovieAdapter(int numberOfItems, Context context, ArrayList<String> images){
 
         mNumberItems = numberOfItems;
-        mOnClickListener = listener;
+
         mURLS = images;
         mContext = context;
 
@@ -64,12 +56,11 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
     public void onBindViewHolder(MovieViewHolder holder, int position) {
         holder.bind(position);
 
-        ImageView movieItemView;
-        movieItemView = holder.movieItemView;
 
 
 
-            Picasso.with(mContext).load(mURLS.get(position)).into(movieItemView);
+
+            Picasso.with(mContext).load(mURLS.get(position)).into(holder.movieItemView);
 
 
     }
@@ -81,7 +72,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
 
 
 
-    class MovieViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    class MovieViewHolder extends RecyclerView.ViewHolder  {
         ImageView movieItemView;
 
         public MovieViewHolder(View itemView) {
@@ -89,20 +80,13 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
 
              movieItemView = (ImageView) itemView.findViewById(R.id.movie_item);
 
-            itemView.setOnClickListener(this);
 
 
-
-        }
-
-        @Override
-        public void onClick(View view) {
-
-            int clickedPosition = getAdapterPosition();
-            mOnClickListener.onListItemClick(clickedPosition);
 
 
         }
+
+
 
         void bind(int view){
 
